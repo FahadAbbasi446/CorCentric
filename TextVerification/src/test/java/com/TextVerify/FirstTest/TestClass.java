@@ -1,45 +1,37 @@
 package com.TextVerify.FirstTest;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.Assert;
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.PageObjects.UI.Chapter1_PageObjects;
 import com.PageObjects.UI.Home_PageObjects;
 
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.*;
+
 public class TestClass {
-	
-	WebDriver driver;
 
 	@BeforeTest
-    public void doBeforeTest() 
-	{
-		System.out.println("Working Directory = " + System.getProperty("user.dir"));
+	public void doBeforeTest() {
 		String chromeDriverPath2 = System.getProperty("user.dir") + "\\chromedriver.exe";
-		System.out.println(chromeDriverPath2);
 		System.setProperty("webdriver.chrome.driver", chromeDriverPath2);
-		driver = new ChromeDriver();
-    }
-	
-	@Test
-	public void sum() 
-	{
-		  driver.get("http://book.theautomatedtester.co.uk/");
-		  driver.manage().window().maximize();
-		  Home_PageObjects HomePage = new Home_PageObjects(driver); 
-		  HomePage.ClickOn_Chapter1();
-		  
-		  Chapter1_PageObjects Ch_HomePage = new Chapter1_PageObjects(driver); 
-		  String Text = Ch_HomePage.GetText();
-		  Assert.assertEquals(Text, "Assert that this text is on the page");
-		  driver.navigate().back();	  
+		System.setProperty("selenide.browser", "Chrome");
 	}
-	@AfterTest
-    public void doAfterTest() 
-	{
-		driver.quit();
-    }
+
+	@Test
+	public void TestToVerifyTextOnChapter1View() {
+		// Opening required URL
+		open("http://book.theautomatedtester.co.uk/");
+
+		// Clicking on Chapter1 link.
+		Home_PageObjects PageObjects1 = new Home_PageObjects();
+		PageObjects1.ClickOn_Chapter1();
+
+		// Verifying test on Chapter1 view.
+		Chapter1_PageObjects Ch_HomePage = new Chapter1_PageObjects();
+		Ch_HomePage.VerifyText();
+
+		// Navigating back to homepage.
+		back();
+	}
 }
